@@ -100,7 +100,6 @@ public class Disassembler {
 	}
 */
 	public String getFunct3(String instruction) {
-	    System.out.println(instruction.substring(31-14, 32-12));
 		return instruction.substring(31-14, 32-12);
 	}
 
@@ -279,15 +278,12 @@ public class Disassembler {
 	}
 
 	public String getOpcode(String instruction) {
-	    System.out.println(instruction.substring(32-7, 32));
 		return instruction.substring(32-7, 32);
 	}
 
 	public String getFullInstructionName(String instruction) throws Exception {
-	    System.out.println(getFunct3(instruction));
 		Instruction inst = getInstruction(getOpcode(instruction), getFunct3(instruction), getFunct7(instruction));
 		StringBuilder builder = new StringBuilder(inst.getName());
-		System.out.println(inst.getFormat().getName());
 		switch (inst.getFormat().getName()) {
 			case R_TYPE:
 				builder.append(" " + getRd(instruction) + ", " + getRs1(instruction) + ", " + getRs2(instruction));
