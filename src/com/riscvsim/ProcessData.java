@@ -2,7 +2,7 @@ package com.riscvsim;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.riscvsim.Architecture.InstructionSet;
+import com.riscvsim.Architecture.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -92,26 +92,21 @@ public class ProcessData {
 		InstructionSet isa = new InstructionSet();
 		try {
 			isa = mapper.readValue(new File(Main.RISCV32I_TEMPLATE_PATH), InstructionSet.class);
-			/*
-			for (InstructionFormatHelper helper : isa.getFormats()) {
-				System.out.print(helper.getInstructionFormat().getName() + " | ");
-				System.out.println(helper.getInstructionFormat().getSegmentCount() + " | ");
-				for (SegmentHelper segmentHelper: helper.getInstructionFormat().getSegments()){
-					System.out.print(segmentHelper.getSegment().getName() + " | ");
-					System.out.print(segmentHelper.getSegment().getStartBit() + " | ");
-					System.out.println(segmentHelper.getSegment().getStopBit() + " | ");
+			for (InstructionFormat helper : isa.getFormats()) {
+				System.out.print(helper.getName() + " | ");
+				System.out.println(helper.getSegmentCount() + " | ");
+				for (Segment segmentHelper: helper.getSegments()){
+					System.out.print(segmentHelper.getName() + " | ");
+					System.out.print(segmentHelper.getStartBit() + " | ");
+					System.out.println(segmentHelper.getStopBit() + " | ");
+				}
+				for (Opcode op : helper.getOpcodes()) {
+					System.out.println("Opcode: " + op.getValue());
+					for (Instruction i : op.getInstructions()) {
+						System.out.println("Name : " +  i.getName() + " Funct3 " + i.getFunct3());
+					}
 				}
 			}
-			for (ImmediateFormatHelper helper : isa.getImmediates()) {
-				System.out.print(helper.getImmediateFormat().getName() + " | ");
-				System.out.println(helper.getImmediateFormat().getSegmentCount() + " | ");
-				for (SegmentHelper segmentHelper: helper.getImmediateFormat().getSegments()){
-					System.out.print(segmentHelper.getSegment().getName() + " | ");
-					System.out.print(segmentHelper.getSegment().getStartBit() + " | ");
-					System.out.println(segmentHelper.getSegment().getStopBit() + " | ");
-				}
-			}
-			*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

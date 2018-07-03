@@ -43,7 +43,7 @@ formats:
               {name: xori, immediate: null, funct3: '100'},
               {name: slti, immediate: null, funct3: '010'},
               {name: sltiu, immediate: null, funct3: '011'},
-              {name: srai, format: null, opcode: '0010011', immediateLoadable: {startBit: 26, stopBit: 31, value: '010000'}, funct3: '101'},
+              {name: srai, immediateLoadable: {startBit: 26, stopBit: 31, value: '010000'}, funct3: '101'},
               {name: srli, immediateLoadable: {startBit: 26, stopBit: 31, value: '000000'}, funct3: '101'},
               {name: slli, funct3: '001', immediateLoadable:{ startBit: 26, stopBit: 31, value: '000000'}}
             ]}
@@ -102,6 +102,22 @@ formats:
           - {value: '0010111', instructions: [
               {name: auipc, immediate: null}
             ]}
+    - name: UJ-type
+      segmentCount: 6
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: rd, startBit: 7, stopBit: 11}
+          - {name: 'imm[19:12]', startBit: 12, stopBit: 19}
+          - {name: 'imm[11]', startBit: 20, stopBit: 20}
+          - {name: 'imm[10:1]', startBit: 21, stopBit: 30}
+          - {name: 'imm[20]', startBit: 31, stopBit: 31}
+      opcodes:
+          - {value: '1100111', instructions: [
+            {name: jalr, immediate: null}
+          ]}
+          - {value: '1101111', instructions: [
+            {name: jal, immediate: null}
+          ]}
     - name: UJ-type
       segmentCount: 6
       segments:

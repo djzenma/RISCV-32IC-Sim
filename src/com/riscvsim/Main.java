@@ -18,7 +18,10 @@ public class Main {
 		ArrayList<String> wordList = ProcessData.processBinaryFile();
 		isa = ProcessData.parseYAML();
 		Disassembler disassembler = new Disassembler();
-
-
-	}
+        try {
+            System.out.println(disassembler.getFullInstructionName(wordList.get(0)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

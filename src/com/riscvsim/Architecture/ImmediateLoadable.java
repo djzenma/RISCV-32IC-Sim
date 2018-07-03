@@ -2,7 +2,7 @@ package com.riscvsim.Architecture;
 
 public class ImmediateLoadable {
 	private Integer startBit;
-	private Integer stopBIt;
+	private Integer StopBit;
 	private String value;
 
 	public Integer getStartBit() {
@@ -13,12 +13,12 @@ public class ImmediateLoadable {
 		this.startBit = startBit;
 	}
 
-	public Integer getStopBIt() {
-		return stopBIt;
+	public Integer getStopBit() {
+		return StopBit;
 	}
 
-	public void setStopBIt(Integer stopBIt) {
-		this.stopBIt = stopBIt;
+	public void setStopBit(Integer stopBit) {
+		this.StopBit = stopBit;
 	}
 
 	public String getValue() {

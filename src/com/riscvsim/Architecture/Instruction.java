@@ -5,17 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Instruction {
 	private String name;
-	@JsonIgnore
 	private InstructionFormat format;
-	@JsonIgnore
 	private Opcode opcode;
-	@JsonIgnore
 	private String funct3;
-	@JsonIgnore
 	private String funct7;
-	@JsonIgnore
 	private String immediate;
-	@JsonIgnore
 	private ImmediateLoadable immediateLoadable;
 
 	public Instruction() {

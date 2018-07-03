@@ -1,18 +1,21 @@
 package com.riscvsim.Disassembler;
 
+import com.riscvsim.Architecture.Instruction;
 import com.riscvsim.Architecture.InstructionFormat;
 import com.riscvsim.Architecture.Opcode;
+import com.riscvsim.Architecture.Segment;
+import com.riscvsim.Main;
 
 import java.util.ArrayList;
 
 public class Disassembler {
-	public static final int R_TYPE = 0;
-	public static final int I_TYPE = 1;
-	public static final int S_TYPE = 2;
-	public static final int U_TYPE = 3;
-	public static final int SB_TYPE = 4;
-	public static final int UJ_TYPE = 5;
-	public static final int I_TYPE_SHIFT_CATEGORY = 6;
+	public static final String R_TYPE = "R-type";
+	public static final String I_TYPE = "I-type";
+	public static final String S_TYPE = "S-type";
+	public static final String U_TYPE = "U-type";
+	public static final String SB_TYPE = "SB-type";
+	public static final String UJ_TYPE = "UJ-type";
+	public static final String I_TYPE_SHIFT_CATEGORY = "fuck";
 
 	private ArrayList<InstructionFormat> instructionFormatList;
 	private ArrayList<Opcode> opcodeList;
@@ -20,21 +23,50 @@ public class Disassembler {
 	private ArrayList<String> instructionList;
 
 	public Disassembler() {
-		//for (InstructionFormatHelper ifh : Main.isa.getFormats()) {
-		//	instructionFormatList.add(ifh.getInstructionFormat());
-		//}
+		instructionFormatList = Main.isa.getFormats();
 	}
 
-	public Opcode getOpcodeAndFormat(String opcode) {
-		//for (InstructionFormat format : instructionFormatList) {
-		//	for (OpcodeHelper helper : format.getOpcodes()) {
-		//		if (helper.getOpcode().getValue().equals(opcode))
-		//			return helper.getOpcode();
-		//	}
-		//}
-		return new Opcode();
+	public Instruction getInstruction(String opcode, String func3, String funct7) throws Exception {
+		boolean contains_funct3 = false;
+		boolean contains_funct7 = false;
+		for (InstructionFormat format : instructionFormatList) {
+			for (Opcode op : format.getOpcodes()) {
+				if (op.getValue().equals(opcode)) {
+					for (Segment s: format.getSegments()) {
+						if(s.getName().equals("funct3"))
+							contains_funct3 = true;
+						if(s.getName().equals("funct7"))
+							contains_funct7 = true;
+					}
+					if(contains_funct3) {
+						for (Instruction instruction : op.getInstructions()) {
+							if (instruction.getFunct3().equals(func3)) {
+                                if (contains_funct7) {
+                                    if(instruction.getFunct7().equals(funct7)) {
+                                        instruction.setFormat(format);
+                                        instruction.setOpcode(op);
+                                        return instruction;
+                                    }
+                                }
+                                else {
+                                    instruction.setFormat(format);
+                                    instruction.setOpcode(op);
+                                    return instruction;
+                                }
+							}
+						}
+					}
+					else {
+						op.getInstructions().get(0).setOpcode(op);
+                        op.getInstructions().get(0).setFormat(format);
+                        return op.getInstructions().get(0);
+					}
+				}
+			}
+		}
+		throw new Exception("Error: Instruction Not Found!");
 	}
-
+/*
 	public int getFormat(String instruction) throws Exception {
 		String opcode = "000";//getOpcode(instruction);
 		switch (opcode) {
@@ -66,9 +98,10 @@ public class Disassembler {
 				throw new Exception("Format not defined");
 		}
 	}
-
+*/
 	public String getFunct3(String instruction) {
-		return instruction.substring(17, 20);
+	    System.out.println(instruction.substring(31-14, 32-12));
+		return instruction.substring(31-14, 32-12);
 	}
 
 	public String getFunct7(String instruction) {
@@ -76,7 +109,7 @@ public class Disassembler {
 	}
 
 	public String getRs1(String instruction) {
-		return instruction.substring(12, 17);
+		return instruction.substring(31-19, 31-14);
 	}
 
 	public String getRs2(String instruction) {
@@ -84,9 +117,9 @@ public class Disassembler {
 	}
 
 	public String getRd(String instruction) {
-		return instruction.substring(21, 25);
+		return instruction.substring(31-11, 31-6);
 	}
-
+/*
 	public String getInstructionName(String instruction) throws Exception {
 		String opcode = "";// getOpcode(instruction);
 		switch (opcode) {
@@ -232,7 +265,7 @@ public class Disassembler {
 		}
 		throw new Exception("Error: Unknown Instruction");
 	}
-
+*/
 	public String getImm12(String instruction) {
 		return instruction.substring(0, 12);
 	}
@@ -245,23 +278,29 @@ public class Disassembler {
 		return instruction.substring(8, 13);
 	}
 
-	public String getFullInstructionName(String instruction) throws Exception {
-		String instructionName = getInstructionName(instruction);
-		StringBuilder builder = new StringBuilder(instructionName);
+	public String getOpcode(String instruction) {
+	    System.out.println(instruction.substring(32-7, 32));
+		return instruction.substring(32-7, 32);
+	}
 
-		switch (getFormat(instruction)) {
+	public String getFullInstructionName(String instruction) throws Exception {
+	    System.out.println(getFunct3(instruction));
+		Instruction inst = getInstruction(getOpcode(instruction), getFunct3(instruction), getFunct7(instruction));
+		StringBuilder builder = new StringBuilder(inst.getName());
+		System.out.println(inst.getFormat().getName());
+		switch (inst.getFormat().getName()) {
 			case R_TYPE:
 				builder.append(" " + getRd(instruction) + ", " + getRs1(instruction) + ", " + getRs2(instruction));
-				//return builder.toString();
-			case I_TYPE:
-				builder.append(" " + getRd(instruction) + ", " + getRs1(instruction) + ", " + getImm12(instruction));
 				return builder.toString();
-			case I_TYPE_SHIFT_CATEGORY:
-				builder.append(" " + getRd(instruction) + ", " + getRs1(instruction) + getShamt(instruction));
+			case I_TYPE:
+				if(inst.getName().equals("srai") || inst.getName().equals("srli") || inst.getName().equals("slli"))
+				    builder.append(" " + getRd(instruction) + ", " + getRs1(instruction) + ", " + getShamt(instruction));
+				else
+                    builder.append(" " + getRd(instruction) + ", " + getRs1(instruction) + ", " + getImm12(instruction));
 				return builder.toString();
 			case S_TYPE:
 				builder.append(" " + getRs1(instruction) + ", " + getRs2(instruction) + ", " + getImm12(instruction));
-				break;
+                return builder.toString();
 			case U_TYPE:
 				builder.append(" " + getRd(instruction) + ", " + getImm20(instruction));
 				return builder.toString();
@@ -269,11 +308,11 @@ public class Disassembler {
 				builder.append(" " + getRd(instruction) + ", " + getImm20(instruction));
 				return builder.toString();
 			case SB_TYPE:
-
-				break;
+                builder.append(" " + getRs1(instruction) + ", " + getRs2(instruction) + ", " + getImm12(instruction) );
+                return builder.toString();
+            default:
+                throw new Exception("Error: Unknown Instruction");
 		}
-
-		return "";
 	}
 
 }
