@@ -1,15 +1,18 @@
 package com.riscvsim.Architecture;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Instruction {
 	private String name;
-	private String opcode;
+	@JsonIgnore
+	private InstructionFormat format;
+	@JsonIgnore
+	private Opcode opcode;
 	@JsonIgnore
 	private String funct3;
 	@JsonIgnore
 	private String funct7;
-	private String format;
 	@JsonIgnore
 	private String immediate;
 	@JsonIgnore
@@ -18,20 +21,28 @@ public class Instruction {
 	public Instruction() {
 	}
 
+	public InstructionFormat getFormat() {
+		return format;
+	}
+
+	public void setFormat(InstructionFormat format) {
+		this.format = format;
+	}
+
+	public Opcode getOpcode() {
+		return opcode;
+	}
+
+	public void setOpcode(Opcode opcode) {
+		this.opcode = opcode;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getOpcode() {
-		return opcode;
-	}
-
-	public void setOpcode(String opcode) {
-		this.opcode = opcode;
 	}
 
 	public String getFunct3() {
@@ -48,14 +59,6 @@ public class Instruction {
 
 	public void setFunct7(String funct7) {
 		this.funct7 = funct7;
-	}
-
-	public String getFormat() {
-		return format;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 	public ImmediateLoadable getImmediateLoadable() {
