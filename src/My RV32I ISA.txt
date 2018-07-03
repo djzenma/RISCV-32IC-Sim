@@ -1,0 +1,90 @@
+RV32I
+Remarks: the start bit and end bit of : opcode: 6..0, funct3: 14..12, funct7: 31..25
+
+opcode: ’11000 11’ (6..2= 0x18, 1..0=3) Format : SB Type
+beq		funct3: ‘0’
+bne		funct3: ‘1’
+blt		funct3: ‘4’
+bge		funct3: ‘5’
+bltu		funct3: ‘6’
+bgeu		funct3: ‘7’
+
+
+opcode: ’11001 11’ (6..2=0x19 1..0=3) Format : UJ Type
+jalr	funct3: ‘0’
+
+
+opcode: ’11011 11’ (6..2=0x1b 1..0=3) Format : UJ Type
+jal
+
+opcode: ’01101 11’ (6..2=0x0D 1..0=3) Format : U Type
+lui
+
+opcode: ’00101 11’ (6..2=0x05 1..0=3) Format : U Type
+auipc
+
+opcode: ’00100 11’ (6..2=0x04 1..0=3) Format : I Type
+addi		funct3: ‘0’
+slli		funct3: ‘1’	31..26=0 , shamt: 25..20 (not sure)
+slti		funct3: ‘2’
+sltiu		funct3: ‘3’
+xori		funct3: ‘4’
+srli		funct3: ‘5’	31..26=0 , shamt: 25..20 (not sure)
+srai		funct3: ‘5’	31..26=16, shamt: 25..20 (not sure)
+ori		funct3: ‘6’
+andi		funct3: ‘7’
+
+opcode: ’01100 11’ (6..2=0x0C 1..0=3) Format : R Type
+add		funct3: ‘0’	funct7: ‘0’
+sub		funct3: ‘0’	funct7: ‘32’
+sll		funct3: ‘1’	funct7: ‘0’
+slt		funct3: ‘2’	funct7: ‘0’
+sltu		funct3: ‘3’	funct7: ‘0’
+xor		funct3: ‘4’	funct7: ‘0’
+srl		funct3: ‘5’	funct7: ‘0’
+sra		funct3: ‘5’	funct7: ‘32’
+or		funct3: ‘6’	funct7: ‘0’
+and		funct3: ‘7’	funct7: ‘0’
+
+
+
+opcode: ’00000 11’ (6..2=0x00 1..0=3) Format : I Type
+lb	funct3: ‘0’
+lh	funct3: ‘1’
+lw	funct3: ‘2’
+lbu	funct3: ‘4’
+lhu	funct3: ‘5’
+
+
+opcode: ’01000 11’ (6..2=0x08 1..0=3) Format : S Type
+sb	funct3: ‘0’
+sh	funct3: ‘1’
+sw	funct3: ‘2’
+
+
+opcode: ’00011 11’ (6..2=0x03 1..0=3) Format : I Type
+fence	funct3: ‘0’
+fence.i	funct3: ‘1’
+
+
+
+
+// 64 bits
+
+opcode: ’00110 11’ (6..2=0x06 1..0=3) Format : 
+addiw
+slliw
+srliw
+sraiw
+
+opcode: ’01110 11’ (6..2=0x0E 1..0=3) Format : 
+addw
+subw
+sllw
+srlw
+sraw
+
+https://github.com/riscv/riscv-opcodes/blob/master/opcodes#L10
+
+
+

@@ -1,0 +1,120 @@
+memory: 1024
+architecture: 32
+formats:
+    - name: R-type
+      segmentCount: 6
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: rd, startBit: 7, stopBit: 11}
+          - {name: funct3, startBit: 12, stopBit: 14}
+          - {name: rs1, startBit: 15, stopBit: 19}
+          - {name: rs2, startBit: 20, stopBit: 24}
+          - {name: funct7, startBit: 25, stopBit: 31}
+      opcodes:
+          - {value: '0110011', instructions: [
+            {name: add, funct3: '000', funct7: '0000000'},
+            {name: sub, funct3: '000', funct7: '0100000'},
+            {name: and, funct3: '111', funct7: '0000000'},
+            {name: or, funct3: '110', funct7: '0000000'},
+            {name: xor, funct3: '100', funct7: '0000000'},
+            {name: slt, funct3: '010', funct7: '0000000'},
+            {name: sltu, funct3: '011', funct7: '0000000'},
+            {name: sra, funct3: '101', funct7: '0100000'},
+            {name: srl, funct3: '101', funct7: '0000000'},
+            {name: sll, funct3: '001', funct7: '0000000'}
+          ]}
+    - name: I-type
+      segmentCount: 5
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: rd, startBit: 7, stopBit: 11}
+          - {name: funct3, startBit: 12, stopBit: 14}
+          - {name: rs1, startBit: 15, stopBit: 19}
+          - {name: 'imm[11:0]', startBit: 20, stopBit: 31}
+      opcodes:
+          - {value: '0001111', instructions: [
+              {name: fence, immediate: null, funct3: '000'},
+              {name: fence.i, immediate: null, funct3: '001'}
+            ]}
+          - {value: '0010011', instructions: [
+              {name: addi, immediate: null, funct3: '000'},
+              {name: andi, immediate: null, funct3: '111'},
+              {name: ori, immediate: null, funct3: '110'},
+              {name: xori, immediate: null, funct3: '100'},
+              {name: slti, immediate: null, funct3: '010'},
+              {name: sltiu, immediate: null, funct3: '011'},
+              {name: srai, format: null, opcode: '0010011', immediateLoadable: {startBit: 26, stopBit: 31, value: '010000'}, funct3: '101'},
+              {name: srli, immediateLoadable: {startBit: 26, stopBit: 31, value: '000000'}, funct3: '101'},
+              {name: slli, funct3: '001', immediateLoadable:{ startBit: 26, stopBit: 31, value: '000000'}}
+            ]}
+          - {value: '0000011', instructions: [
+              {name: lb, immediate: null, funct3: '000'},
+              {name: lh, immediate: null, funct3: '001'},
+              {name: lw, immediate: null, funct3: '010'},
+              {name: lbu, immediate: null, funct3: '100'},
+              {name: lhu, immediate: null, funct3: '101'}
+            ]}
+    - name: S-type
+      segmentCount: 6
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: 'imm[4:0]', startBit: 7, stopBit: 11}
+          - {name: funct3, startBit: 12, stopBit: 14}
+          - {name: rs1, startBit: 15, stopBit: 19}
+          - {name: rs2, startBit: 20, stopBit: 24}
+          - {name: 'imm[11:5]', startBit: 25, stopBit: 31}
+      opcodes:
+          - {value: '0100011', instructions: [
+              {name: sb, immediate: null, funct3: '000'},
+              {name: sh, immediate: null, funct3: '001'},
+              {name: sw, immediate: null, funct3: '010'}
+            ]}
+    - name: SB-type
+      segmentCount: 8
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: 'imm[11]', startBit: 7, stopBit: 7}
+          - {name: 'imm[4:1]', startBit: 8, stopBit: 11}
+          - {name: funct3, startBit: 12, stopBit: 14}
+          - {name: rs1, startBit: 15, stopBit: 19}
+          - {name: rs2, startBit: 20, stopBit: 24}
+          - {name: 'imm[10:5]', startBit: 25, stopBit: 30}
+          - {name: 'imm[12]', startBit: 31, stopBit: 31}
+      opcodes:
+          - {value: '1100011', instructions: [
+              {name: beq, immediate: null, funct3: '000'},
+              {name: bne, immediate: null, funct3: '001'},
+              {name: blt, immediate: null, funct3: '100'},
+              {name: bge, immediate: null, funct3: '101'},
+              {name: bltu, immediate: null, funct3: '110'},
+              {name: bgeu, immediate: null, funct3: '111'}
+            ]}
+    - name: U-type
+      segmentCount: 3
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: rd, startBit: 7, stopBit: 11}
+          - {name: 'imm[31:12]', startBit: 12, stopBit: 31}
+      opcodes:
+          - {value: '0110111', instructions: [
+              {name: lui, immediate: null}
+              ]}
+          - {value: '0010111', instructions: [
+              {name: auipc, immediate: null}
+            ]}
+    - name: UJ-type
+      segmentCount: 6
+      segments:
+          - {name: opcode, startBit: 0, stopBit: 6}
+          - {name: rd, startBit: 7, stopBit: 11}
+          - {name: 'imm[19:12]', startBit: 12, stopBit: 19}
+          - {name: 'imm[11]', startBit: 20, stopBit: 20}
+          - {name: 'imm[10:1]', startBit: 21, stopBit: 30}
+          - {name: 'imm[20]', startBit: 31, stopBit: 31}
+      opcodes:
+          - {value: '1100111', instructions: [
+            {name: jalr, immediate: null}
+          ]}
+          - {value: '1101111', instructions: [
+            {name: jal, immediate: null}
+          ]}
