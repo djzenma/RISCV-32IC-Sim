@@ -2,7 +2,6 @@ package com.riscvsim.Disassembler;
 
 import com.riscvsim.Architecture.InstructionFormat;
 import com.riscvsim.Architecture.Opcode;
-import com.sun.tools.javac.Main;
 
 import java.util.ArrayList;
 
