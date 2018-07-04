@@ -1,18 +1,33 @@
 package com.riscvsim.Architecture;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Map;
 
 public class Instruction {
 	private String name;
 	private InstructionFormat format;
-	private Opcode opcode;
-	private String funct3;
-	private String funct7;
+	private InstructionGroup instructionGroup;
+	private Map<String, String> keys;
 	private String immediate;
-	private ImmediateLoadable immediateLoadable;
+	private ImmediateLoadable immediateLoadable = new ImmediateLoadable();
 
-	public Instruction() {
+	/**
+	 * Jackson Constructor
+	 *
+	 * @param name
+	 * @param funct3
+	 * @param funct7
+	 * @param immediate
+	 */
+	@JsonCreator
+	public Instruction(@JsonProperty(value = "name", required = true) String name,
+	                   @JsonProperty(value = "funct3", defaultValue = "NONE") String funct3,
+	                   @JsonProperty(value = "funct7", defaultValue = "NONE") String funct7,
+	                   @JsonProperty(value = "immediate", defaultValue = "NONE") String immediate) {
+		this.name = name;
+		this.immediate = immediate;
 	}
 
 	public InstructionFormat getFormat() {
@@ -23,12 +38,12 @@ public class Instruction {
 		this.format = format;
 	}
 
-	public Opcode getOpcode() {
-		return opcode;
+	public InstructionGroup getInstructionGroup() {
+		return instructionGroup;
 	}
 
-	public void setOpcode(Opcode opcode) {
-		this.opcode = opcode;
+	public void setInstructionGroup(InstructionGroup instructionGroup) {
+		this.instructionGroup = instructionGroup;
 	}
 
 	public String getName() {
@@ -37,22 +52,6 @@ public class Instruction {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getFunct3() {
-		return funct3;
-	}
-
-	public void setFunct3(String funct3) {
-		this.funct3 = funct3;
-	}
-
-	public String getFunct7() {
-		return funct7;
-	}
-
-	public void setFunct7(String funct7) {
-		this.funct7 = funct7;
 	}
 
 	public ImmediateLoadable getImmediateLoadable() {
@@ -69,5 +68,13 @@ public class Instruction {
 
 	public void setImmediate(String immediate) {
 		this.immediate = immediate;
+	}
+
+	public Map<String, String> getKeys() {
+		return keys;
+	}
+
+	public void setKeys(Map<String, String> keys) {
+		this.keys = keys;
 	}
 }

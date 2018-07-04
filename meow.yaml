@@ -1,6 +1,5 @@
 
 immediates:
-    - ImmediateFormat: &IImmediate
             - name: 'I-Immediate'
             segmentCount: 4
             segments:

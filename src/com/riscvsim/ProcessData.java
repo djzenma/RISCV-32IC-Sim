@@ -87,28 +87,24 @@ public class ProcessData {
 		return instrList;
 	}
 
-	static InstructionSet parseYAML() {
+	static InstructionSet parseYAML() throws Exception {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-		InstructionSet isa = new InstructionSet();
-		try {
-			isa = mapper.readValue(new File(Main.RISCV32I_TEMPLATE_PATH), InstructionSet.class);
-			for (InstructionFormat helper : isa.getFormats()) {
-				System.out.print(helper.getName() + " | ");
-				System.out.println(helper.getSegmentCount() + " | ");
-				for (Segment segmentHelper: helper.getSegments()){
-					System.out.print(segmentHelper.getName() + " | ");
-					System.out.print(segmentHelper.getStartBit() + " | ");
-					System.out.println(segmentHelper.getStopBit() + " | ");
-				}
-				for (Opcode op : helper.getOpcodes()) {
-					System.out.println("Opcode: " + op.getValue());
-					for (Instruction i : op.getInstructions()) {
-						System.out.println("Name : " +  i.getName() + " Funct3 " + i.getFunct3());
-					}
+		InstructionSet isa = mapper.readValue(new File(Main.RISCV32I_TEMPLATE_PATH), InstructionSet.class);
+		for (InstructionFormat helper : isa.getFormats()) {
+			System.out.print(helper.getName() + " | ");
+			for (Segment segmentHelper : helper.getSegments()) {
+				System.out.print(segmentHelper.getName() + " | ");
+				System.out.print(segmentHelper.getStartBit() + " | ");
+				System.out.println(segmentHelper.getStopBit() + " | ");
+			}
+			for (InstructionGroup op : helper.getInstructionGroups()) {
+				System.out.println("InstructionGroup: " + op.getValue());
+				for (Instruction i : op.getInstructions()) {
+					System.out.println("Name : " + i.getName() + " Funct3: " + " ImmediateLoadable" + i.getImmediateLoadable().getValue() + " / "
+							+ i.getImmediateLoadable().getStartBit() + " / " + i.getImmediateLoadable().getStopBit() + " / " + i.getImmediateLoadable().isSecondary());
+
 				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return isa;
 	}

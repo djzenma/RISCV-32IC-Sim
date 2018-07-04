@@ -1,8 +1,24 @@
 package com.riscvsim.Architecture;
 
-public class ImmediateFormat extends Format {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	public ImmediateFormat() {
+import java.util.ArrayList;
+
+public class ImmediateFormat {
+	private String name;
+	private ArrayList<SegmentHelper> segments;
+
+	/**
+	 * Jackson Constructor
+	 *
+	 * @param name
+	 * @param segments
+	 */
+	@JsonCreator
+	public ImmediateFormat(@JsonProperty(value = "name", required = true) String name,
+	                       @JsonProperty(value = "segments", required = true) ArrayList<SegmentHelper> segments) {
+		this.name = name;
+		this.segments = segments;
 	}
-
 }

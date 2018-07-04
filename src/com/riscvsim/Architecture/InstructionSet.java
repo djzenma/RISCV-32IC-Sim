@@ -1,5 +1,6 @@
 package com.riscvsim.Architecture;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -8,9 +9,26 @@ public class InstructionSet {
 	private Integer memory;
 	private Integer architecture;
 	private ArrayList<InstructionFormat> formats;
-	private ArrayList<ImmediateFormat> immediates;
+	//TODO: ADD IMMEDIATE FORMATS TO YAML CONFIG FILE
+	private ArrayList<ImmediateFormat> immediateFormats;
 
-	public InstructionSet() {
+	/**
+	 * Jackson Constructor
+	 *
+	 * @param memory
+	 * @param architecture
+	 * @param formats
+	 * @param immediateFormats
+	 */
+	@JsonCreator
+	public InstructionSet(@JsonProperty(value = "memory", required = true) Integer memory,
+	                      @JsonProperty(value = "architecture", required = true) Integer architecture,
+	                      @JsonProperty(value = "formats", required = true) ArrayList<InstructionFormat> formats,
+	                      @JsonProperty(value = "immediateFormats") ArrayList<ImmediateFormat> immediateFormats) {
+		this.memory = memory;
+		this.architecture = architecture;
+		this.formats = formats;
+		this.immediateFormats = immediateFormats;
 	}
 
 	public Integer getMemory() {
@@ -37,11 +55,11 @@ public class InstructionSet {
 		this.formats = formats;
 	}
 
-	public ArrayList<ImmediateFormat> getImmediates() {
-		return immediates;
+	public ArrayList<ImmediateFormat> getImmediateFormats() {
+		return immediateFormats;
 	}
 
-	public void setImmediates(ArrayList<ImmediateFormat> immediates) {
-		this.immediates = immediates;
+	public void setImmediateFormats(ArrayList<ImmediateFormat> immediateFormats) {
+		this.immediateFormats = immediateFormats;
 	}
 }
