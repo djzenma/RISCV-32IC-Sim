@@ -1,13 +1,22 @@
 package com.riscvsim.Memory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RegFile {
     private static int mRegFileSize = 32;
     private static HashMap<Register, Integer> regFile= new HashMap<>();
+    private static ArrayList<Register> registers = new ArrayList<>();
 
     public static int STACK_POINTER = 2;
+    public static int RETURN_ADRESS= 1;
+
     static {
+        for (int i = 0; i < mRegFileSize; i++) {
+            Register reg = new Register(i);
+            registers.add(i, reg);
+            regFile.put(reg, 0);
+        }
         regFile.put(new Register(STACK_POINTER), Memory.getStackSegmentAddr());
     }
 
@@ -28,33 +37,25 @@ public class RegFile {
                 regFile.put(register, 0);
             }
              else{
-                Register register = new Register(regNumber);
-                regFile.put(register, value);
+                if (regFile.containsKey(registers.get(regNumber)))
+                    regFile.replace(registers.get(regNumber), value);
+                else
+                    regFile.put(registers.get(regNumber), value);
             }
         }
     }
 
-    public static void setInRegisterByAddress(int regAddress, int value) throws Exception {
-        int regNum = Register.getRegNumber(regAddress);
 
+    public static int getValueFromReg(int regNum) throws Exception {
         if(regNum > mRegFileSize -1 || regNum < 0)
             throw new Exception("Error: Register Number Out Of Range");
-        else {
-            if(regNum == 0) {
-                Register register = new Register(regNum);
-                regFile.put(register, 0);
-            }
-            else{
-                Register register = new Register(regNum);
-                regFile.put(register, value);
-            }
-        }
+        return regFile.get(registers.get(regNum));
     }
 
-    static int getValueFromReg(int regNum) throws Exception {
+    public static long getUnsignedValueFromReg(int regNum) throws Exception {
         if(regNum > mRegFileSize -1 || regNum < 0)
             throw new Exception("Error: Register Number Out Of Range");
-        return regFile.get(new Register(regNum));
+        return Integer.toUnsignedLong(regFile.get(registers.get(regNum)));
     }
 
     public static int getStackPointerValue() {
