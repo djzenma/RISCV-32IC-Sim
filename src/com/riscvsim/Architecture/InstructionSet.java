@@ -24,7 +24,7 @@ public class InstructionSet {
 	public InstructionSet(@JsonProperty(value = "memory", required = true) Integer memory,
 	                      @JsonProperty(value = "architecture", required = true) Integer architecture,
 	                      @JsonProperty(value = "formats", required = true) ArrayList<InstructionFormat> formats,
-	                      @JsonProperty(value = "immediateFormats") ArrayList<ImmediateFormat> immediateFormats) {
+	                      @JsonProperty(value = "immediates") ArrayList<ImmediateFormat> immediateFormats) {
 		this.memory = memory;
 		this.architecture = architecture;
 		this.formats = formats;

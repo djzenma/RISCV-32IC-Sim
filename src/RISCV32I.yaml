@@ -44,9 +44,9 @@ formats:
               {name: xori, immediate: null, keys: {"funct3": "100"}},
               {name: slti, immediate: null, keys: {"funct3": "010"}},
               {name: sltiu, immediate: null, keys: {"funct3": "011"}},
-              {name: srai, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: {secondary: true, startBit: 25, stopBit: 31, value: '010000'}},
-              {name: srli, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: {secondary: true, startBit: 25, stopBit: 31, value: '000000'}},
-              {name: slli, keys: {"funct3": "001"}, immediateLoadable:{ startBit: 25, stopBit: 31, value: '000000'}}
+              {name: srai, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: {secondary: true, startBit: 26, stopBit: 31, value: '010000'}},
+              {name: srli, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: {secondary: true, startBit: 26, stopBit: 31, value: '000000'}},
+              {name: slli, keys: {"funct3": "001"}, immediateLoadable:{ startBit: 26, stopBit: 31, value: '000000'}}
             ]}
           - {key: op, value: '0000011', instructions: [
               {name: lb, immediate: null, keys: {"funct3": "000"}},
@@ -209,3 +209,37 @@ formats:
           - {key: op, value: '1100111', instructions: [
             {name: jalr, immediate: null}
           ]}
+immediates:
+    - name: I-Immediate
+      segments:
+          - {name: 'inst[20]', startBit: 0, stopBit: 0}
+          - {name: 'inst[24:21]', startBit: 1, stopBit: 4}
+          - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
+          - {name: 'inst[31]', startBit: 11, stopBit: 31}
+    - name: S-Immediate
+      segments:
+          - {name: 'inst[7]', startBit: 0, stopBit: 0}
+          - {name: 'inst[11:8]', startBit: 1, stopBit: 4}
+          - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
+          - {name: 'inst[31]', startBit: 11, stopBit: 31}
+    - name: B-Immediate
+      segments:
+          - {name: '0', startBit: 0, stopBit: 0}
+          - {name: 'inst[11:8]', startBit: 1, stopBit: 4}
+          - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
+          - {name: 'inst[7]', startBit: 11, stopBit: 11}
+          - {name: 'inst[12]', startBit: 12, stopBit: 31}
+    - name: U-Immediate
+      segments:
+          - {name: '0', startBit: 0, stopBit: 12}
+          - {name: 'inst[19:12]', startBit: 12, stopBit: 19}
+          - {name: 'inst[30:20]', startBit: 20, stopBit: 30}
+          - {name: 'inst[31]', startBit: 31, stopBit: 31}
+    - name: J-Immediate
+      segments:
+          - {name: '0', startBit: 0, stopBit: 0}
+          - {name: 'inst[24:21]', startBit: 1, stopBit: 4}
+          - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
+          - {name: 'inst[20]', startBit: 11, stopBit: 11}
+          - {name: 'inst[19:12]', startBit: 12, stopBit: 19}
+          - {name: 'inst[31]', startBit: 20, stopBit: 31}
