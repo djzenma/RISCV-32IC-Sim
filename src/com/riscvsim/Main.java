@@ -21,14 +21,12 @@ public class Main {
 		ArrayList<String> wordList = ProcessData.processBinaryFile();
 
         try {
-            RegFile.setInRegisterByName(1, 0);
-            RegFile.setInRegisterByName(2, 1);
-            Instructions.add(1, 1, 2);
-            System.out.println(RegFile.getValueFromReg(1));
+	        isa = ProcessData.parseYAML();
+	        Disassembler disassembler = new Disassembler();
+	        disassembler.printInstruction(wordList.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //isa = ProcessData.parseYAML();
     }
 }

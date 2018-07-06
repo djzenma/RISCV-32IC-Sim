@@ -134,7 +134,7 @@ formats:
           - {name: imm, startBit: 2, stopBit: 6}
           - {name: rs1/rd, startBit: 7, stopBit: 11}
           - {name: imm, startBit: 12, stopBit: 12}
-          - {name: funct3, secondary: true, precedence: 1, startBit: 13, stopBit: 15}}
+          - {name: funct3, secondary: true, precedence: 1, startBit: 13, stopBit: 15}
       instructionGroups:
           - {key: op, value: '01', instructions: [
             {name: c.nop, keys: {"funct3": "000", "loadable": "1"}, immediateLoadable: {secondary: true, startBit: 2, stopBit: 12, value: '0000000000'}},
@@ -209,4 +209,3 @@ formats:
           - {key: op, value: '1100111', instructions: [
             {name: jalr, immediate: null}
           ]}
-immediates:
