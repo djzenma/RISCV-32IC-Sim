@@ -1,14 +1,18 @@
 package com.riscvsim;
 
+import com.fasterxml.jackson.core.async.ByteArrayFeeder;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.std.ByteArraySerializer;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.riscvsim.Architecture.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.BitSet;
 
 public class ProcessData {
 
@@ -45,24 +49,38 @@ public class ProcessData {
 		return fileContent.toString();
 	}
 
-	static ArrayList<String> processBinaryFile() {
-		String fileContent = readFile(Main.BIN_FILE_PATH);
-		String word;
-		ArrayList<String> wordList = new ArrayList<>();
-		for (int i = 0; i < fileContent.length(); i += 32) {
-			try {
-				int temp = i + 32;
-				word = fileContent.substring(i, temp);
-				wordList.add(word);
-				System.out.println("[" + Main.date + "] Word Processed (" + word + ")");
-			} catch (Exception e) {
-				System.out.println("[" + Main.date + "] Error message: " + e.getMessage() +
-						"\n" + "[" + Main.date + "] Exception occured most likely your memory.txt file is not aligned to 32-bit architecture");
-			}
+	static BitSet readBinaryFile(String path) throws Exception {
+		BitSet bits = null;
+		try {
+			byte[] byteArray = Files.readAllBytes(Paths.get(path));
+			if ((byteArray.length * 8) % 16 != 0)
+				throw new Exception("Error: Invalid File Alignment");
+			bits = BitSet.valueOf(byteArray);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		System.out.println("[" + Main.date + "] src.Memory file processed successfully");
-		return wordList;
+		return bits;
 	}
+
+	//static ArrayList<String> processBinaryFile() {
+	//		try {
+	//			BitSet fileContent = readBinaryFile(Main.BIN_FILE_PATH);
+	//			if (fileContent != null) {
+	//			String word;
+	//			ArrayList<String> wordList = new ArrayList<>();
+	//			for (int i = 0; i < fileContent.length(); i += 32) {
+	//				word = fileContent.substring(i, i + 32);
+	//				wordList.add(word);
+	//				System.out.println("[" + Main.date + "] Word Processed (" + word + ")");
+	//			}
+	//			System.out.println("[" + Main.date + "] Binary file processed successfully");x
+	//			}
+	//		} catch (Exception e) {
+	//			System.out.println("[" + Main.date + "] Error message: " + e.getMessage() +
+	//					"\n" + "[" + Main.date + "] Exception occured most likely your memory.txt file is not aligned to 32-bit/compressed 16-bit architecture");
+	//		}
+	//		return wordList;
+	//}
 
 	static ArrayList<String> processInstrFile() {
 		String instructions = readFile("");
@@ -99,11 +117,11 @@ public class ProcessData {
 			}
 			for (InstructionGroup op : helper.getInstructionGroups()) {
 				System.out.println("InstructionGroup: " + op.getValue());
-				for (Instruction i : op.getInstructions()) {
-					System.out.println("Name : " + i.getName() + " Funct3: " + " ImmediateLoadable" + i.getImmediateLoadable().getValue() + " / "
-							+ i.getImmediateLoadable().getStartBit() + " / " + i.getImmediateLoadable().getStopBit() + " / " + i.getImmediateLoadable().isSecondary());
-
-				}
+				//for (Instruction i : op.getInstructions()) {
+				//	System.out.println("Name : " + i.getName() + " Funct3: " + " ImmediateLoadable" + i.getImmediateLoadable().getValue() + " / "
+				//			+ i.getImmediateLoadable().getStartBit() + " / " + i.getImmediateLoadable().getStopBit() + " / " + i.getImmediateLoadable().isSecondary());
+//
+//				}
 			}
 		}
 		return isa;

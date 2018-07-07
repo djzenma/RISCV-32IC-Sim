@@ -3,6 +3,7 @@ package com.riscvsim.Architecture;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Instruction {
@@ -11,7 +12,7 @@ public class Instruction {
 	private InstructionGroup instructionGroup;
 	private Map<String, String> keys;
 	private String immediate;
-	private ImmediateLoadable immediateLoadable = new ImmediateLoadable();
+	private ArrayList<ImmediateLoadable> immediateLoadable;
 
 	/**
 	 * Jackson Constructor
@@ -25,7 +26,8 @@ public class Instruction {
 	public Instruction(@JsonProperty(value = "name", required = true) String name,
 	                   @JsonProperty(value = "funct3", defaultValue = "NONE") String funct3,
 	                   @JsonProperty(value = "funct7", defaultValue = "NONE") String funct7,
-	                   @JsonProperty(value = "immediate", defaultValue = "NONE") String immediate) {
+	                   @JsonProperty(value = "immediate",
+			                   defaultValue = "NONE") String immediate) {
 		this.name = name;
 		this.immediate = immediate;
 	}
@@ -54,11 +56,11 @@ public class Instruction {
 		this.name = name;
 	}
 
-	public ImmediateLoadable getImmediateLoadable() {
+	public ArrayList<ImmediateLoadable> getImmediateLoadable() {
 		return immediateLoadable;
 	}
 
-	public void setImmediateLoadable(ImmediateLoadable immediateLoadable) {
+	public void setImmediateLoadable(ArrayList<ImmediateLoadable> immediateLoadable) {
 		this.immediateLoadable = immediateLoadable;
 	}
 
