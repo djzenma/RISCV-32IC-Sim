@@ -1,0 +1,37 @@
+
+simple3.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00010137          	lui	sp,0x10
+   4:	ffc10113          	addi	sp,sp,-4 # fffc <_fstack>
+   8:	00a000ef          	jal	ra,12 <main>
+
+0000000c <Exit>:
+   c:	48a9                	li	a7,10
+   e:	00000073          	ecall
+
+00000012 <main>:
+  12:	1101                	addi	sp,sp,-32
+  14:	ce22                	sw	s0,28(sp)
+  16:	1000                	addi	s0,sp,32
+  18:	47a9                	li	a5,10
+  1a:	fef42623          	sw	a5,-20(s0)
+  1e:	47d1                	li	a5,20
+  20:	fef42423          	sw	a5,-24(s0)
+  24:	fec42703          	lw	a4,-20(s0)
+  28:	87ba                	mv	a5,a4
+  2a:	078a                	slli	a5,a5,0x2
+  2c:	97ba                	add	a5,a5,a4
+  2e:	fef42423          	sw	a5,-24(s0)
+  32:	4885                	li	a7,1
+  34:	853e                	mv	a0,a5
+  36:	00000073          	ecall
+  3a:	fef42423          	sw	a5,-24(s0)
+  3e:	4781                	li	a5,0
+  40:	853e                	mv	a0,a5
+  42:	4472                	lw	s0,28(sp)
+  44:	6105                	addi	sp,sp,32
+  46:	8082                	ret

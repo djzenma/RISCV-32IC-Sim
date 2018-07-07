@@ -1,0 +1,58 @@
+
+simple4.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	00010137          	lui	sp,0x10
+   4:	ffc10113          	addi	sp,sp,-4 # fffc <_fstack>
+   8:	028000ef          	jal	ra,30 <main>
+
+0000000c <Exit>:
+   c:	48a9                	li	a7,10
+   e:	00000073          	ecall
+
+00000012 <printInt>:
+  12:	1101                	addi	sp,sp,-32
+  14:	ce22                	sw	s0,28(sp)
+  16:	1000                	addi	s0,sp,32
+  18:	fea42623          	sw	a0,-20(s0)
+  1c:	4885                	li	a7,1
+  1e:	853e                	mv	a0,a5
+  20:	00000073          	ecall
+  24:	fef42623          	sw	a5,-20(s0)
+  28:	0001                	nop
+  2a:	4472                	lw	s0,28(sp)
+  2c:	6105                	addi	sp,sp,32
+  2e:	8082                	ret
+
+00000030 <main>:
+  30:	1101                	addi	sp,sp,-32
+  32:	ce06                	sw	ra,28(sp)
+  34:	cc22                	sw	s0,24(sp)
+  36:	1000                	addi	s0,sp,32
+  38:	03200793          	li	a5,50
+  3c:	fef42423          	sw	a5,-24(s0)
+  40:	fe042223          	sw	zero,-28(s0)
+  44:	fe042623          	sw	zero,-20(s0)
+  48:	a829                	j	62 <main+0x32>
+  4a:	fe442703          	lw	a4,-28(s0)
+  4e:	fec42783          	lw	a5,-20(s0)
+  52:	97ba                	add	a5,a5,a4
+  54:	fef42223          	sw	a5,-28(s0)
+  58:	fec42783          	lw	a5,-20(s0)
+  5c:	0785                	addi	a5,a5,1
+  5e:	fef42623          	sw	a5,-20(s0)
+  62:	fe842783          	lw	a5,-24(s0)
+  66:	fec42703          	lw	a4,-20(s0)
+  6a:	fee7d0e3          	ble	a4,a5,4a <main+0x1a>
+  6e:	fe442783          	lw	a5,-28(s0)
+  72:	853e                	mv	a0,a5
+  74:	3f79                	jal	12 <printInt>
+  76:	4781                	li	a5,0
+  78:	853e                	mv	a0,a5
+  7a:	40f2                	lw	ra,28(sp)
+  7c:	4462                	lw	s0,24(sp)
+  7e:	6105                	addi	sp,sp,32
+  80:	8082                	ret
