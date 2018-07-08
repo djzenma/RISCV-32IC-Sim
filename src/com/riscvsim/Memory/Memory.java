@@ -17,6 +17,7 @@ public class Memory {
     public static final int WORD = 4;
     public static final int HALF_WORD = 2;
     public static final int BYTE = 1;
+    public static final int STRING = 0;
 
     private static byte[] memory;
 
@@ -96,7 +97,16 @@ public class Memory {
             throw new Exception("Error: You are not loading from the Heap segment, please be sure that your address is in the Heap Segment");
 
         byte[] loaded = new byte[TYPE];
-        System.arraycopy(memory, address, loaded, 0, TYPE);
+        if(TYPE == STRING) {
+            int i = address;
+            while(memory[i] != 0) {
+                i++;
+            }
+            System.arraycopy(memory, address, loaded, 0, i);
+        } else {
+            loaded = new byte[TYPE];
+            System.arraycopy(memory, address, loaded, 0, TYPE);
+        }
         return loaded;
     }
 }
