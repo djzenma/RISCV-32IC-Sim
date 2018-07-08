@@ -33,9 +33,9 @@ public class Instructions {
         pc = address;
     }
 
-    public static void jalr(int reg, Integer pc) throws Exception {
+    public static void jalr(int rs1, Integer pc) throws Exception {
         RegFile.setInRegisterByName(RegFile.RETURN_ADRESS, pc);
-        int jumpAd = getValueFromReg(reg);
+        int jumpAd = getValueFromReg(rs1);
         if (jumpAd >= Memory.getDataSegmentAddr() || jumpAd < Memory.getTextSegmentAddr())
             throw new Exception("Error: Address out of Text Segment Range");
         pc = jumpAd;

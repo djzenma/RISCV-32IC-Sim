@@ -1,6 +1,7 @@
 package com.riscvsim.Instructions;
 
 import com.riscvsim.Architecture.Instruction;
+import com.riscvsim.Disassembler.Immediate;
 
 import java.util.BitSet;
 import java.util.Map;
@@ -9,16 +10,20 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Simulator {
+    private int pc;
     private Instruction instruction;
     private BitSet instructionBits;
 
     private Map<String, ISAFunctions2> functions2;
     private Map<String, ISAFunctions3> functions3;
     private Map<String, ISAFunctions4> functions4;
+    private int address;
 
-    public Simulator(Instruction inst, BitSet instructionBits) {
+    public Simulator(Instruction inst, BitSet instructionBits, int address, int pc) {
         this.instruction = inst;
         this.instructionBits = instructionBits;
+        this.pc = pc;
+        this.address = address;
 
         functions2.put("jal", Instructions::jal);
         functions2.put("jalr", Instructions::jalr);
@@ -61,25 +66,42 @@ public class Simulator {
     }
 
 
-    public void simulate() throws Exception {
-        if(functions2.containsKey(instruction.getName())) {
-
-        } else if(functions3.containsKey(instruction.getName())) {
+    public void simulate(int regD, int immediate) throws Exception {
+        switch (instruction.getName()) {
+            case "lui":
+                BitSet rd = instructionBits.get(instruction.getFormat().getSegmentByName("rd").getStartBit(),
+                        instruction.getFormat().getSegmentByName("rd").getStopBit());
+                BitSet imm = instructionBits.get(instruction.getFormat().getSegmentByName("imm").getStartBit(),
+                        instruction.getFormat().getSegmentByName("imm").getStopBit());
+                Immediate toImmediate = new Immediate(instruction, instructionBits);
+                Instructions.lui(bitSetToInt(rd), bitSetToInt(toImmediate.getValue()));
+                break;
+            case "jal":
+                Instructions.jal(address, pc);
+                break;
+            case "jalr":
+                BitSet rs1 = instructionBits.get(instruction.getFormat().getSegmentByName("rs1").getStartBit(),
+                        instruction.getFormat().getSegmentByName("rs1").getStopBit());
+                Instructions.jalr(bitSetToInt(rs1), pc);
+                break;
+        }
+        if(functions3.containsKey(instruction.getName())) {
             BitSet rs1 = instructionBits.get(instruction.getFormat().getSegmentByName("rs1").getStartBit(),
                     instruction.getFormat().getSegmentByName("rs1").getStopBit());
             BitSet rd = instructionBits.get(instruction.getFormat().getSegmentByName("rd").getStartBit(),
                     instruction.getFormat().getSegmentByName("rd").getStopBit());
-            BitSet imm = instructionBits.get(instruction.getFormat().getSegmentByName("imm").getStartBit(),
-                    instruction.getFormat().getSegmentByName("imm").getStopBit());
-            functions3.get(instruction.getName()).method(bitSetToInt(rd), bitSetToInt(rs1), bitSetToInt(imm));
+            Immediate toImmediate = new Immediate(instruction, instructionBits);
+            functions3.get(instruction.getName()).method(bitSetToInt(rd), bitSetToInt(rs1), bitSetToInt(toImmediate.getValue()));
         } else if (functions4.containsKey(instruction.getName())) {
-
+            BitSet rs1 = instructionBits.get(instruction.getFormat().getSegmentByName("rs1").getStartBit(),
+                    instruction.getFormat().getSegmentByName("rs1").getStopBit());
+            BitSet rs2 = instructionBits.get(instruction.getFormat().getSegmentByName("rs2").getStartBit(),
+                    instruction.getFormat().getSegmentByName("rs2").getStopBit());
+            functions4.get(instruction.getName()).method(bitSetToInt(rs1), bitSetToInt(rs2), this.address,this.pc);
         } else
             throw new Exception("Error: Cannot Execute!");
     }
 
-    public void execute(Instruction inst) {
-    }
 
     public static int bitSetToInt(BitSet bitSet)
     {
