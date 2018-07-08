@@ -95,40 +95,40 @@ public class Instructions {
         }
     }
 
-    public static void lb(int rd, int imm, int reg) throws Exception {
+    public static void lb(int rd,  int reg, int imm) throws Exception {
         Memory.loadFromHeap(getValueFromReg(reg) + imm, Memory.BYTE);
     }
 
-    public static void lh(int rd, int imm, int reg) throws Exception {
+    public static void lh(int rd, int reg, int imm) throws Exception {
         Memory.loadFromHeap(getValueFromReg(reg) + imm, Memory.HALF_WORD);
     }
 
-    public static void lw(int rd, int imm, int reg) throws Exception {
+    public static void lw(int rd,  int reg, int imm) throws Exception {
         Memory.loadFromHeap(getValueFromReg(reg) + imm, Memory.WORD);
     }
 
     // TODO: Unsigned not done
-    public static void lbu(int rd, int imm, int reg) throws Exception {
+    public static void lbu(int rd, int reg, int imm) throws Exception {
         Memory.loadFromHeap(getValueFromReg(reg) + imm, Memory.BYTE);
     }
 
-    public static void lhu(int rd, int imm, int reg) throws Exception {
+    public static void lhu(int rd, int reg, int imm) throws Exception {
         Memory.loadFromHeap(getValueFromReg(reg) + imm, Memory.HALF_WORD);
     }
 
-    public static void lwu(int rd, int imm, int reg) throws Exception {
+    public static void lwu(int rd,  int reg, int imm) throws Exception {
         Memory.loadFromHeap(getValueFromReg(reg) + imm, Memory.WORD);
     }
 
-    public static void sw(int rs, int imm, int rd) throws Exception {
+    public static void sw(int rd, int rs, int imm) throws Exception {
         Memory.storeInHeap(rs, getValueFromReg(rd) + imm, Memory.WORD);
     }
 
-    public static void sh(int rs, int imm, int rd) throws Exception {
+    public static void sh(int rd, int rs, int imm) throws Exception {
         Memory.storeInHeap(rs, getValueFromReg(rd) + imm, Memory.HALF_WORD);
     }
 
-    public static void sb(int rs, int imm, int rd) throws Exception {
+    public static void sb(int rd, int rs, int imm) throws Exception {
         Memory.storeInHeap(rs, getValueFromReg(rd) + imm, Memory.BYTE);
     }
 
@@ -220,4 +220,20 @@ public class Instructions {
     public static void sra(int rd, int rs1, int rs2) throws Exception {
         RegFile.setInRegisterByName(rd, getValueFromReg(rs1) >> getValueFromReg(rs2) & 0b1111111);
     }
+
+    public static void ecall(int a7, int a0) throws Exception {
+        switch (a7) {
+            case 1:
+                System.out.println(a0);
+                break;
+            case 4:
+                byte[] string = Memory.loadFromHeap(a0, 0);
+                System.out.println(string.toString());
+                break;
+            case 10:
+                System.exit(0);
+                break;
+        }
+    }
+
 }
