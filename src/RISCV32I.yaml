@@ -274,7 +274,7 @@ immediates:
           - {name: 'inst[19:12]', startBit: 12, stopBit: 19}
           - {name: 'inst[30:20]', startBit: 20, stopBit: 30}
           - {name: 'inst[31]', startBit: 31, stopBit: 31}
-    - name: J-Immediate
+    - name: J
       segments:
           - {name: '0', startBit: 0, stopBit: 0}
           - {name: 'inst[24:21]', startBit: 1, stopBit: 4}

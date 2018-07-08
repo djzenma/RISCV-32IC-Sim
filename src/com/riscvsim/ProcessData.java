@@ -64,7 +64,7 @@ public class ProcessData {
 
 	//static ArrayList<String> processBinaryFile() {
 	//		try {
-	//			BitSet fileContent = readBinaryFile(Main.BIN_FILE_PATH);
+	//			BitSet fileContent = readBinaryFile(Main.binFilePath);
 	//			if (fileContent != null) {
 	//			String word;
 	//			ArrayList<String> wordList = new ArrayList<>();

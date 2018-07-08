@@ -35,24 +35,27 @@ public class Decoder {
 		throw new Exception("No Instruction Group Exists for this memory value (" + encodedInstruction.size() + ")");
 	}
 
-	private static String bitSetToString(String bits) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("{");
-		for (int i = 0; i < bits.length(); i++) {
-			if (bits.charAt(i) == '1') {
-				builder.append(i);
-				builder.append(", ");
-			}
+	public static BitSet mapBitSets(BitSet set, BitSet setToInsert, Integer startIndex) {
+		BitSet newSet = BitSet.valueOf(set.toByteArray());
+		for (int i = 0; i < setToInsert.size(); i++) {
+			newSet.set(startIndex + i, setToInsert.get(i));
 		}
-		if (builder.toString().length() > 2)
-			builder.delete(builder.toString().length() - 2, builder.toString().length());
-		builder.append("}");
+		return newSet;
+	}
+
+	public static String bitSetToString(BitSet bitSet) {
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < bitSet.size(); i++) {
+			if (bitSet.get(i))
+				builder.append("1");
+			else
+				builder.append("0");
+		}
 		return builder.toString();
 	}
 
 	private static boolean isKey(String value, Integer startBit, Integer stopBit) {
-		return encodedInstruction.get(startBit, stopBit + 1).toString().equals(bitSetToString(new StringBuilder(value).reverse().toString()));
-
+		return value.equals(bitSetToString(encodedInstruction.get(startBit, stopBit + 1)));
 	}
 
 

@@ -37,4 +37,5 @@ public class ImmediateFormat {
 	public void setSegments(ArrayList<Segment> segments) {
 		this.segments = segments;
 	}
+
 }
