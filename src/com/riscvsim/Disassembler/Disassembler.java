@@ -9,15 +9,11 @@ public class Disassembler {
 	public Disassembler() {
 	}
 
-	public void printInstruction(BitSet encodedInstruction) throws Exception {
-		Decoder.setEncodedInstruction(encodedInstruction);
-		Instruction instruction = Decoder.decodeInstruction();
+	public static void disassemble(Instruction instruction, BitSet encodedInstruction) {
 		System.out.print(instruction.getName() + '\t');
 		for (Segment segment : instruction.getFormat().getSegments()) {
-			System.out.print(segment.getName() + ": " + encodedInstruction.get(segment.getStartBit(),segment.getStopBit()) + '\t');
+			System.out.print(segment.getName() + ": " + Decoder.bitSetToString(encodedInstruction.get(segment.getStartBit(), segment.getStopBit() + 1), segment.getStopBit()-segment.getStartBit()+1) + ' ');
 		}
 		System.out.print("\n");
 	}
-
-
 }

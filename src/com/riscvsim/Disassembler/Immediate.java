@@ -8,26 +8,26 @@ import com.riscvsim.Main;
 import java.util.BitSet;
 
 public class Immediate {
-	private BitSet value;
+	private BitSet value = new BitSet(32);
 
 	public Immediate(Instruction instruction, BitSet encodedInstruction) throws Exception {
 		for (Segment segment : getImmediateFormatByName(instruction.getImmediate()).getSegments()) {
 			if (segment.getName().equals("0")) {
-				encodedInstruction.set(segment.getStartBit(), segment.getStopBit() + 1, false);
+				value.set(segment.getStartBit(), segment.getStopBit() + 1, false);
 			} else {
 				String segmentName = segment.getName();
-				Integer instructionStartBit = Integer.parseInt(
-						segmentName.substring(segmentName.lastIndexOf('['),
-								segmentName.lastIndexOf(']') + 1).substring(segmentName.lastIndexOf(':')
-						));
-				Integer instructionStopBit = Integer.parseInt(
-						segmentName.substring(segmentName.lastIndexOf('['),
-								segmentName.lastIndexOf(']') + 1).substring(0, segmentName.lastIndexOf(':')
-						));
-				this.value = Decoder.mapBitSets(encodedInstruction,
-						encodedInstruction.get(instructionStartBit, instructionStopBit + 1),
-						segment.getStartBit()
-				);
+				String integerString = segmentName.substring(segmentName.indexOf('[') + 1, segmentName.indexOf(']'));
+				Integer instructionStartBit = Integer.parseInt(integerString.substring(integerString.indexOf(':') + 1));
+				Integer instructionStopBit = Integer.parseInt(integerString.substring(0, integerString.indexOf(':')));
+				BitSet source = encodedInstruction.get(instructionStartBit,instructionStopBit + 1);
+				int sourceLength = instructionStopBit-instructionStartBit+1;
+				int targetLength = segment.getStopBit()-segment.getStartBit()+1;
+				for(int i = 0; i < targetLength; i+=sourceLength){
+					for(int j = 0; j < sourceLength; j++){
+						if(source.get(j))
+							value.set(segment.getStartBit() + i + j, true);
+					}
+				}
 			}
 		}
 	}

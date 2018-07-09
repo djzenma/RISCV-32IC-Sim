@@ -1,45 +1,39 @@
 package com.riscvsim.Memory;
 
+import com.riscvsim.Fetcher;
+
 public class Register {
-    private int regNumber;
-    private int regAddress;
-    private int regValue;
+	private String name;
+	private int regNumber;
+	private int regValue;
 
-    public Register(int regNumber) {
-        this.regNumber = regNumber;
-        this.regAddress = Memory.getTextSegmentAddr() + (4*regNumber);
-    }
+	public Register(String name, int regNumber, int regValue) {
+		this.name = name;
+		this.regNumber = regNumber;
+		this.regValue = regValue;
+	}
 
-    public void setRegNumber(int regNumber) {
-        this.regNumber = regNumber;
-    }
+	public int getRegNumber() {
+		return regNumber;
+	}
 
-    public void setRegAddress(int regAddress) {
-        this.regAddress = regAddress;
-    }
+	public void setRegNumber(int regNumber) {
+		this.regNumber = regNumber;
+	}
 
-    public void setRegValue(int regValue) {
-        this.regValue = regValue;
-    }
+	public int getRegValue() {
+		return regValue;
+	}
 
-    public int getRegNumber() {
-        return regNumber;
-    }
+	public void setRegValue(int regValue) {
+		this.regValue = regValue;
+	}
 
-    public int getRegAddress() {
-        return regAddress;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public int getRegValue() {
-        return regValue;
-    }
-
-    // general purpose
-    public static int getRegAddress(int registerNumber) {
-        return  Memory.getTextSegmentAddr() + (4*registerNumber);
-    }
-
-    public static int getRegNumber(int registerAddress) {
-        return ( registerAddress - Memory.getTextSegmentAddr() ) / 4;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 }

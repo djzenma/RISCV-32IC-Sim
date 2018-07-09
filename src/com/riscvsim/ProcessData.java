@@ -53,6 +53,7 @@ public class ProcessData {
 		BitSet bits = null;
 		try {
 			byte[] byteArray = Files.readAllBytes(Paths.get(path));
+			Main.fileLength = byteArray.length * 8;
 			if ((byteArray.length * 8) % 16 != 0)
 				throw new Exception("Error: Invalid File Alignment");
 			bits = BitSet.valueOf(byteArray);
@@ -108,22 +109,6 @@ public class ProcessData {
 	static InstructionSet parseYAML() throws Exception {
 		ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 		InstructionSet isa = mapper.readValue(new File(Main.RISCV32I_TEMPLATE_PATH), InstructionSet.class);
-		for (InstructionFormat helper : isa.getFormats()) {
-			System.out.print(helper.getName() + " | ");
-			for (Segment segmentHelper : helper.getSegments()) {
-				System.out.print(segmentHelper.getName() + " | ");
-				System.out.print(segmentHelper.getStartBit() + " | ");
-				System.out.println(segmentHelper.getStopBit() + " | ");
-			}
-			for (InstructionGroup op : helper.getInstructionGroups()) {
-				System.out.println("InstructionGroup: " + op.getValue());
-				//for (Instruction i : op.getInstructions()) {
-				//	System.out.println("Name : " + i.getName() + " Funct3: " + " ImmediateLoadable" + i.getImmediateLoadable().getValue() + " / "
-				//			+ i.getImmediateLoadable().getStartBit() + " / " + i.getImmediateLoadable().getStopBit() + " / " + i.getImmediateLoadable().isSecondary());
-//
-//				}
-			}
-		}
 		return isa;
 	}
 }

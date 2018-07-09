@@ -38,6 +38,9 @@ formats:
           - {key: op, value: '1110011', instructions: [
               {name: ecall, immediate: null, keys: {"funct3": "000"}}
             ]}
+          - {key: op, value: '1100111', instructions: [
+            {name: jalr, immediate: I, keys: {"funct3": "000"}}
+          ]}
           - {key: op, value: '0001111', instructions: [
               {name: fence, immediate: null, keys: {"funct3": "000"}},
               {name: fence.i, immediate: null, keys: {"funct3": "001"}}
@@ -47,9 +50,9 @@ formats:
               {name: xori, immediate: I, keys: {"funct3": "100"}},
               {name: ori, immediate: I, keys: {"funct3": "110"}},
               {name: andi, immediate: I, keys: {"funct3": "111"}},
-              {name: slli, keys: {"funct3": "001"}, immediateLoadable: [{ startBit: 25, stopBit: 31, value: '0000000'}]},
-              {name: srli, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: [{secondary: true, startBit: 25, stopBit: 31, value: '0000000'}]},
-              {name: srai, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: [{secondary: true, startBit: 25, stopBit: 31, value: '0000000'}]},
+              {name: slli, immediate: I, keys: {"funct3": "001"}, immediateLoadable: [{ startBit: 25, stopBit: 31, value: '0000000'}]},
+              {name: srli, immediate: I,keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: [{secondary: true, startBit: 25, stopBit: 31, value: '0000000'}]},
+              {name: srai,immediate: I, keys: {"funct3": "101", "loadable": "1"}, immediateLoadable: [{secondary: true, startBit: 25, stopBit: 31, value: '0000000'}]},
               {name: slt, immediate: I, keys: {"funct3": "010"}},
               {name: sltu, immediate: I, keys: {"funct3": "011"}},
              ]}
@@ -114,9 +117,6 @@ formats:
           - {name: 'imm[10:1]', startBit: 21, stopBit: 30}
           - {name: 'imm[20]', startBit: 31, stopBit: 31}
       instructionGroups:
-          - {key: op, value: '1100111', instructions: [
-            {name: jalr, immediate: I}
-          ]}
           - {key: op, value: '1101111', instructions: [
             {name: jal, immediate: J}
           ]}
@@ -249,36 +249,36 @@ formats:
               {name: c.j, immediate: null, keys:{"funct3": "101"}}
           ]}
 immediates:
-    - name: I-Immediate
+    - name: I
       segments:
-          - {name: 'inst[20]', startBit: 0, stopBit: 0}
+          - {name: 'inst[20:20]', startBit: 0, stopBit: 0}
           - {name: 'inst[24:21]', startBit: 1, stopBit: 4}
           - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
-          - {name: 'inst[31]', startBit: 11, stopBit: 31}
-    - name: S-Immediate
+          - {name: 'inst[31:31]', startBit: 11, stopBit: 31}
+    - name: S
       segments:
-          - {name: 'inst[7]', startBit: 0, stopBit: 0}
+          - {name: 'inst[7:7]', startBit: 0, stopBit: 0}
           - {name: 'inst[11:8]', startBit: 1, stopBit: 4}
           - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
-          - {name: 'inst[31]', startBit: 11, stopBit: 31}
-    - name: B-Immediate
+          - {name: 'inst[31:31]', startBit: 11, stopBit: 31}
+    - name: B
       segments:
           - {name: '0', startBit: 0, stopBit: 0}
           - {name: 'inst[11:8]', startBit: 1, stopBit: 4}
           - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
-          - {name: 'inst[7]', startBit: 11, stopBit: 11}
-          - {name: 'inst[12]', startBit: 12, stopBit: 31}
-    - name: U-Immediate
+          - {name: 'inst[7:7]', startBit: 11, stopBit: 11}
+          - {name: 'inst[31:31]', startBit: 12, stopBit: 31}
+    - name: U
       segments:
           - {name: '0', startBit: 0, stopBit: 12}
           - {name: 'inst[19:12]', startBit: 12, stopBit: 19}
           - {name: 'inst[30:20]', startBit: 20, stopBit: 30}
-          - {name: 'inst[31]', startBit: 31, stopBit: 31}
+          - {name: 'inst[31:31]', startBit: 31, stopBit: 31}
     - name: J
       segments:
           - {name: '0', startBit: 0, stopBit: 0}
           - {name: 'inst[24:21]', startBit: 1, stopBit: 4}
           - {name: 'inst[30:25]', startBit: 5, stopBit: 10}
-          - {name: 'inst[20]', startBit: 11, stopBit: 11}
+          - {name: 'inst[20:20]', startBit: 11, stopBit: 11}
           - {name: 'inst[19:12]', startBit: 12, stopBit: 19}
-          - {name: 'inst[31]', startBit: 20, stopBit: 31}
+          - {name: 'inst[31:31]', startBit: 20, stopBit: 31}

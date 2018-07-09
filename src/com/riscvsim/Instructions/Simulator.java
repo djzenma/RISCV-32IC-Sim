@@ -2,131 +2,157 @@ package com.riscvsim.Instructions;
 
 import com.riscvsim.Architecture.Instruction;
 import com.riscvsim.Disassembler.Immediate;
+import com.riscvsim.Fetcher;
+import com.riscvsim.Memory.RegFile;
+import javafx.util.converter.IntegerStringConverter;
 
+import java.nio.ByteBuffer;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Simulator {
-    private int pc;
-    private Instruction instruction;
-    private BitSet instructionBits;
+	private static Instruction instruction;
+	private static BitSet instructionBits;
 
-    private Map<String, ISAFunctions2> functions2;
-    private Map<String, ISAFunctions3> functions3;
-    private Map<String, ISAFunctions4> functions4;
-    private int address;
+	private static Map<String, R> R_Instructions;
+	private static Map<String, I> S_Instructions;
+	private static Map<String, S> I_Instructions;
+	private static Map<String, SB> SB_Instructions;
+	private static Map<String, U> U_Instructions;
+	private static Map<String, UJ> UJ_Instructions;
 
-    public Simulator(Instruction inst, BitSet instructionBits, int address, int pc) {
-        this.instruction = inst;
-        this.instructionBits = instructionBits;
-        this.pc = pc;
-        this.address = address;
-
-        functions2.put("jal", Instructions::jal);
-        functions2.put("jalr", Instructions::jalr);
-
-        functions3.put("add", Instructions::add);
-        functions3.put("addi", Instructions::addi);
-        functions3.put("and", Instructions::and);
-        functions3.put("andi", Instructions::andi);
-        functions3.put("auipc", Instructions::auipc);
-        functions3.put("lb", Instructions::lb);
-        functions3.put("lbu", Instructions::lbu);
-        functions3.put("lh", Instructions::lh);
-        functions3.put("lhu", Instructions::lhu);
-        functions3.put("lw", Instructions::lw);
-        functions3.put("lwu", Instructions::lwu);
-        functions3.put("or", Instructions::or);
-        functions3.put("ori", Instructions::ori);
-        functions3.put("sb", Instructions::sb);
-        functions3.put("sh", Instructions::sh);
-        functions3.put("sw", Instructions::sw);
-        functions3.put("sll", Instructions::sll);
-        functions3.put("slli", Instructions::slli);
-        functions3.put("slt", Instructions::slt);
-        functions3.put("slti", Instructions::slti);
-        functions3.put("sltiu", Instructions::sltiu);
-        functions3.put("sra", Instructions::sra);
-        functions3.put("srai", Instructions::srai);
-        functions3.put("srl", Instructions::srl);
-        functions3.put("sub", Instructions::sub);
-        functions3.put("srli", Instructions::srli);
-        functions3.put("xor", Instructions::xor);
-        functions3.put("xori", Instructions::xori);
-
-        functions4.put("beq", Instructions::beq);
-        functions4.put("bge", Instructions::bge);
-        functions4.put("bgeu", Instructions::bgeu);
-        functions4.put("blt", Instructions::blt);
-        functions4.put("bltu", Instructions::bltu);
-        functions4.put("bne", Instructions::bne);
-    }
+	public static void init(Instruction inst, BitSet instructionBits) {
+		Simulator.instruction = inst;
+		Simulator.instructionBits = instructionBits;
+		R_Instructions = new HashMap<>();
+		I_Instructions = new HashMap<>();
+		S_Instructions = new HashMap<>();
+		SB_Instructions = new HashMap<>();
+		U_Instructions = new HashMap<>();
+		UJ_Instructions = new HashMap<>();
 
 
-    public void simulate(int regD, int immediate) throws Exception {
-        switch (instruction.getName()) {
-            case "lui":
-                BitSet rd = instructionBits.get(instruction.getFormat().getSegmentByName("rd").getStartBit(),
-                        instruction.getFormat().getSegmentByName("rd").getStopBit());
-                BitSet imm = instructionBits.get(instruction.getFormat().getSegmentByName("imm").getStartBit(),
-                        instruction.getFormat().getSegmentByName("imm").getStopBit());
-                Immediate toImmediate = new Immediate(instruction, instructionBits);
-                Instructions.lui(bitSetToInt(rd), bitSetToInt(toImmediate.getValue()));
-                break;
-            case "jal":
-                Instructions.jal(address, pc);
-                break;
-            case "jalr":
-                BitSet rs1 = instructionBits.get(instruction.getFormat().getSegmentByName("rs1").getStartBit(),
-                        instruction.getFormat().getSegmentByName("rs1").getStopBit());
-                Instructions.jalr(bitSetToInt(rs1), pc);
-                break;
-        }
-        if(functions3.containsKey(instruction.getName())) {
-            BitSet rs1 = instructionBits.get(instruction.getFormat().getSegmentByName("rs1").getStartBit(),
-                    instruction.getFormat().getSegmentByName("rs1").getStopBit());
-            BitSet rd = instructionBits.get(instruction.getFormat().getSegmentByName("rd").getStartBit(),
-                    instruction.getFormat().getSegmentByName("rd").getStopBit());
-            Immediate toImmediate = new Immediate(instruction, instructionBits);
-            functions3.get(instruction.getName()).method(bitSetToInt(rd), bitSetToInt(rs1), bitSetToInt(toImmediate.getValue()));
-        } else if (functions4.containsKey(instruction.getName())) {
-            BitSet rs1 = instructionBits.get(instruction.getFormat().getSegmentByName("rs1").getStartBit(),
-                    instruction.getFormat().getSegmentByName("rs1").getStopBit());
-            BitSet rs2 = instructionBits.get(instruction.getFormat().getSegmentByName("rs2").getStartBit(),
-                    instruction.getFormat().getSegmentByName("rs2").getStopBit());
-            functions4.get(instruction.getName()).method(bitSetToInt(rs1), bitSetToInt(rs2), this.address,this.pc);
-        } else
-            throw new Exception("Error: Cannot Execute!");
-    }
+		R_Instructions.put("add", Instructions::add);
+		R_Instructions.put("sub", Instructions::sub);
+		R_Instructions.put("xor", Instructions::xor);
+		R_Instructions.put("or", Instructions::or);
+		R_Instructions.put("and", Instructions::and);
+		R_Instructions.put("sll", Instructions::sll);
+		R_Instructions.put("sra", Instructions::sra);
+		R_Instructions.put("srl", Instructions::srl);
+		R_Instructions.put("slt", Instructions::slt);
+		R_Instructions.put("sltiu", Instructions::sltiu);
+
+		I_Instructions.put("addi", Instructions::addi);
+		I_Instructions.put("andi", Instructions::andi);
+		I_Instructions.put("xori", Instructions::xori);
+		I_Instructions.put("ori", Instructions::ori);
+		I_Instructions.put("slli", Instructions::slli);
+		I_Instructions.put("slti", Instructions::slti);
+		I_Instructions.put("srai", Instructions::srai);
+		I_Instructions.put("srli", Instructions::srli);
+		I_Instructions.put("lb", Instructions::lb);
+		I_Instructions.put("lbu", Instructions::lbu);
+		I_Instructions.put("lh", Instructions::lh);
+		I_Instructions.put("lhu", Instructions::lhu);
+		I_Instructions.put("lw", Instructions::lw);
+		//I_Instructions.put("lwu", Instructions::lwu); NOT SUPPORTED IN YAML
+
+		S_Instructions.put("sb", Instructions::sb);
+		S_Instructions.put("sh", Instructions::sh);
+		S_Instructions.put("sw", Instructions::sw);
+
+		SB_Instructions.put("beq", Instructions::beq);
+		SB_Instructions.put("bge", Instructions::bge);
+		SB_Instructions.put("bgeu", Instructions::bgeu);
+		SB_Instructions.put("blt", Instructions::blt);
+		SB_Instructions.put("bltu", Instructions::bltu);
+		SB_Instructions.put("bne", Instructions::bne);
+
+		U_Instructions.put("auipc", Instructions::auipc);
+		U_Instructions.put("lui", Instructions::lui);
+
+		UJ_Instructions.put("jal", Instructions::jal);
+		I_Instructions.put("jalr", Instructions::jalr);
+
+	}
 
 
-    public static int bitSetToInt(BitSet bitSet)
-    {
-        int bitInteger = 0;
-        for(int i = 0 ; i < 32; i++)
-            if(bitSet.get(i))
-                bitInteger |= (1 << i);
-        return bitInteger;
-    }
+	public static void simulate() throws Exception {
+		switch (instruction.getFormat().getName()) {
+			case "R-type":
+				R_Instructions.get(instruction.getName()).method(getSegmentValue("rd"), getSegmentValue("rs1"), getSegmentValue("rs2"));
+				break;
+			case "I-type":
+				if(instruction.getName().equals("ecall"))
+					Instructions.ecall();
+				else
+					I_Instructions.get(instruction.getName()).method(getSegmentValue("rd"), getSegmentValue("rs1"), getImmediateValue());
+				break;
+			case "S-type":
+				S_Instructions.get(instruction.getName()).method(getSegmentValue("rs1"), getSegmentValue("rs2"), getImmediateValue());
+				break;
+			case "SB-type":
+				SB_Instructions.get(instruction.getName()).method(getSegmentValue("rs1"), getSegmentValue("rs2"), getImmediateValue());
+				break;
+			case "U-type":
+				U_Instructions.get(instruction.getName()).method(getSegmentValue("rd"), getImmediateValue());
+				break;
+			case "UJ-type":
+				UJ_Instructions.get(instruction.getName()).method(getSegmentValue("rd"), getImmediateValue());
+				break;
+			default:
+				throw new Exception("Error: Cannot Execute!");
+		}
+	}
+
+	private static int getSegmentValue(String name) throws Exception {
+		return bitSetToInt(instructionBits.get(instruction.getFormat().getSegmentByName(name).getStartBit(),
+				instruction.getFormat().getSegmentByName(name).getStopBit() + 1));
+	}
+
+	private static int getImmediateValue() throws Exception {
+		return bitSetToInt(new Immediate(instruction, instructionBits).getValue());
+	}
+
+	public static int bitSetToInt(BitSet bitSet) {
+		Integer bitInteger = 0;
+		for (int i = 0; i < 32; i++)
+			if (bitSet.get(i))
+				bitInteger |= (1 << i);
+		return bitInteger;
+	}
+
+	@FunctionalInterface
+	public interface R {
+		void method(int a, int b, int c) throws Exception;
+	}
+
+	@FunctionalInterface
+	public interface I {
+		void method(int a, int b, int c) throws Exception;
+	}
 
 
-    @FunctionalInterface
-    public static interface ISAFunctions2 {
-        void method(int a, int b) throws Exception;
-    }
+	@FunctionalInterface
+	public interface S {
+		void method(int a, int b, int c) throws Exception;
+	}
+	@FunctionalInterface
+	public interface SB {
+		void method(int a, int b, int c) throws Exception;
+	}
 
-    @FunctionalInterface
-    public static interface ISAFunctions3 {
-        void method(int a, int b, int c) throws Exception;
-    }
+	@FunctionalInterface
+	public interface U {
+		void method(int a, int b) throws Exception;
+	}
 
-    @FunctionalInterface
-    public static interface ISAFunctions4 {
-        void method(int a, int b, int c, int d) throws Exception;
-    }
+	@FunctionalInterface
+	public interface UJ {
+		void method(int a, int b) throws Exception;
+	}
 }
 
 

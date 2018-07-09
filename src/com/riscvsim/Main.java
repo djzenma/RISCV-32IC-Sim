@@ -1,10 +1,16 @@
 package com.riscvsim;
 
+import com.riscvsim.Architecture.Instruction;
 import com.riscvsim.Architecture.InstructionSet;
+import com.riscvsim.Disassembler.Decoder;
 import com.riscvsim.Disassembler.Disassembler;
+import com.riscvsim.Instructions.Simulator;
+import com.riscvsim.Memory.RegFile;
 
 import java.util.BitSet;
 import java.util.Date;
+
+import static com.riscvsim.Fetcher.pc;
 
 /**
  * Main Entry point of program
@@ -13,7 +19,10 @@ public class Main {
 	/**
 	 * Flag indicating mode of operation
 	 */
-	public static boolean debug = false;
+	public static boolean debug = true;
+
+	public static Integer fileLength;
+
 	static final String RISCV32I_TEMPLATE_PATH = "./src/RISCV32I.yaml";
 	/**
 	 * Path to binary file to be disassembled and executed.
@@ -33,7 +42,7 @@ public class Main {
 		/* Validate Parameters */
 		switch (args.length) {
 			case 0:
-				Main.binFilePath = "./src/simple2.bin";
+				Main.binFilePath = "./src/simple2.c.bin";
 				System.out.println("[" + date + "] Binary file path parameter undetected, default binary Path Chosen.");
 				System.out.println("[" + date + "] Path: " + binFilePath);
 				break;
@@ -46,16 +55,24 @@ public class Main {
 				System.out.println("[" + date + "] Invalid Parameters, Program Exiting...");
 				System.exit(0);
 		}
-
 		try {
-			BitSet bits = ProcessData.readBinaryFile(binFilePath);
+			BitSet binaryFile = ProcessData.readBinaryFile(binFilePath);
 			isa = ProcessData.parseYAML();
-			Disassembler disassembler = new Disassembler();
-			for (int i = 0; i < bits.size() - 32; i += 32)
-				disassembler.printInstruction(bits.get(i, i + 32));
+			while (pc + 32 < binaryFile.size()) {
+				BitSet word;
+				Instruction instruction;
+				word = Fetcher.fetch(binaryFile);
+				instruction = Decoder.decodeInstruction(word);
+				Disassembler.disassemble(instruction, word);
+				Simulator.init(instruction, word);
+				Simulator.simulate();
+				//if (debug)
+					//RegFile.dumpRegisters();
+			}
 		} catch (Exception e) {
 			System.out.println("[" + date + "] Error message: " + e.getMessage());
-			e.printStackTrace();
+			if (debug)
+				e.printStackTrace();
 		}
 	}
 }
